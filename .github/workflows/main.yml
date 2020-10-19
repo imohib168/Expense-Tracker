@@ -1,0 +1,32 @@
+name: DEploying React App (Expense Tracker)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Installing NodeJS
+        uses: actions/setup-node@v2-beta
+        with:
+          version: 12
+      
+      - uses: Borales/actions-yarn@v2.1.0
+        with:
+          cmd: install # yarn install
+      
+      - name: Creating build
+        run: yarn build
+    
+      - name: installing surge 
+        run: npm install -g surge
+      
+      - name: Deploying to Surge
+        run: surge ./build expense-tracker.surge.sh --token ${{ secrets.SURGE_TOKEN }}
